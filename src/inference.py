@@ -19,7 +19,7 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.patches import Patch
 
-from main import get_model
+# from main import get_model
 import postprocess
 sys.path.append("../detr")
 from models import build_model
