@@ -22,7 +22,7 @@ from matplotlib.patches import Patch
 # from main import get_model
 from src import postprocess
 sys.path.append("../detr")
-from models import build_model
+from detr.models import build_model
 
 class MaxResize(object):
     def __init__(self, max_size=800):
