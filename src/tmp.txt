@@ -2,17 +2,13 @@ import re
 
 def custom_conversion(input_str):
     # Define a regular expression pattern to match numbers with leading zeros inside brackets
-    bracket_pattern = r'\((0+\.\d+)\)'
+    bracket_pattern = r'\(\s*0+\.\d+\s*\)'
 
-    # Use re.sub with a custom function to remove brackets and their contents
-    def remove_brackets(match):
-        return match.group(1) if match.group(1) != '0.0' else ''
+    # Use re.sub to remove brackets and their contents when the number inside is "0.0"
+    output_str = re.sub(bracket_pattern, '', input_str)
 
-    # Replace the matched brackets with the modified content
-    output_str = re.sub(bracket_pattern, remove_brackets, input_str)
-
-    # Define a regular expression pattern to match and capture numbers with leading zeros
-    number_pattern = r'0+(\d+\.\d+)'
+    # Define a regular expression pattern to match numbers with leading zeros outside brackets
+    number_pattern = r'\b0+(\d+\.\d+)\b'
 
     # Use re.sub with a custom function to remove leading zeros from matched numbers
     def remove_leading_zeros(match):
@@ -39,3 +35,7 @@ print(output3)  # Output: "6"
 input4 = "n (%)"
 output4 = custom_conversion(input4)
 print(output4)  # Output: "n (%)"
+
+input5 = "00026 (000.0)"
+output5 = custom_conversion(input5)
+print(output5)  # Output: "26"
