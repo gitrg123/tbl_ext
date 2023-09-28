@@ -1,43 +1,23 @@
-text = """header : this is header1
-response : this is response1
+from docx import Document
+from docx.shared import Pt
+from docx.enum.text import WD_ALIGN_PARAGRAPH
 
-header : this is header2
-response : this is response2
-this paragraph is part of the same response2
+# Create a new Word document
+doc = Document()
 
-header : this is header3
-response : this is response3"""
+# Add a paragraph with text
+paragraph = doc.add_paragraph("Click here to visit OpenAI's website:")
 
-# Split the text into lines
-lines = text.split('\n')
+# Set the paragraph alignment to center
+paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-# Initialize an empty dictionary
-header_response_dict = {}
+# Add a hyperlink to the paragraph
+hyperlink = paragraph.add_hyperlink("https://www.openai.com", "OpenAI's Website")
 
-# Iterate through the lines
-current_header = None
-current_response = ""
+# Set the font size and style for the hyperlink
+hyperlink.text_run.font.size = Pt(12)
+hyperlink.text_run.font.italic = True
+hyperlink.text_run.underline = True
 
-for line in lines:
-    # Split each line into parts using " : " as the separator
-    parts = line.split(' : ')
-    if len(parts) == 2:
-        key, value = parts
-        if key.strip() == 'header':
-            # Set the current header
-            current_header = value.strip()
-        elif key.strip() == 'response':
-            # Append to the current response
-            current_response += value.strip() + ' '
-    else:
-        # If the line doesn't contain " : ", it's considered part of the current response
-        current_response += line.strip() + ' '
-
-    # If a new header is encountered, store the previous header and response in the dictionary
-    if current_header and current_response:
-        header_response_dict[current_header] = current_response.strip()
-        current_header = None
-        current_response = ""
-
-# Print the resulting dictionary
-print(header_response_dict)
+# Save the document
+doc.save("document_with_hyperlink.docx")
