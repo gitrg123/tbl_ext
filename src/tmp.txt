@@ -1,6 +1,8 @@
 from docx import Document
-from docx.shared import Pt
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.shared import Pt
+from docx.oxml.ns import nsdecls
+from docx.oxml import parse_xml
 
 # Create a new Word document
 doc = Document()
@@ -11,13 +13,18 @@ paragraph = doc.add_paragraph("Click here to visit OpenAI's website:")
 # Set the paragraph alignment to center
 paragraph.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
-# Add a hyperlink to the paragraph
-hyperlink = paragraph.add_hyperlink("https://www.openai.com", "OpenAI's Website")
+# Create a run for the hyperlink text
+run = paragraph.runs[0]
 
-# Set the font size and style for the hyperlink
-hyperlink.text_run.font.size = Pt(12)
-hyperlink.text_run.font.italic = True
-hyperlink.text_run.underline = True
+# Create the hyperlink
+hyperlink = run._r
+hyperlink.get_or_add_hyperlink("https://www.openai.com", rId=1, nsdecls={'r': nsdecls['r']})
+
+# Set the font size, style, and color for the hyperlink
+run.font.size = Pt(12)
+run.font.italic = True
+run.font.underline = True
+run.font.color.rgb = parse_xml('FF0000')  # Red color
 
 # Save the document
 doc.save("document_with_hyperlink.docx")
