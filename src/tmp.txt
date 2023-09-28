@@ -1,41 +1,43 @@
-import re
+text = """header : this is header1
+response : this is response1
 
-def custom_conversion(input_str):
-    # Define a regular expression pattern to match numbers with leading zeros inside brackets
-    bracket_pattern = r'\(\s*0+\.\d+\s*\)'
+header : this is header2
+response : this is response2
+this paragraph is part of the same response2
 
-    # Use re.sub to remove brackets and their contents when the number inside is "0.0"
-    output_str = re.sub(bracket_pattern, '', input_str)
+header : this is header3
+response : this is response3"""
 
-    # Define a regular expression pattern to match numbers with leading zeros outside brackets
-    number_pattern = r'\b0+(\d+\.\d+)\b'
+# Split the text into lines
+lines = text.split('\n')
 
-    # Use re.sub with a custom function to remove leading zeros from matched numbers
-    def remove_leading_zeros(match):
-        return match.group(1)
+# Initialize an empty dictionary
+header_response_dict = {}
 
-    # Replace the matched numbers with the modified ones
-    output_str = re.sub(number_pattern, remove_leading_zeros, output_str)
+# Iterate through the lines
+current_header = None
+current_response = ""
 
-    return output_str
+for line in lines:
+    # Split each line into parts using " : " as the separator
+    parts = line.split(' : ')
+    if len(parts) == 2:
+        key, value = parts
+        if key.strip() == 'header':
+            # Set the current header
+            current_header = value.strip()
+        elif key.strip() == 'response':
+            # Append to the current response
+            current_response += value.strip() + ' '
+    else:
+        # If the line doesn't contain " : ", it's considered part of the current response
+        current_response += line.strip() + ' '
 
-# Test cases
-input1 = "00006.00 (0023.1)"
-output1 = custom_conversion(input1)
-print(output1)  # Output: "6.00 (23.1)"
+    # If a new header is encountered, store the previous header and response in the dictionary
+    if current_header and current_response:
+        header_response_dict[current_header] = current_response.strip()
+        current_header = None
+        current_response = ""
 
-input2 = "MR 11.5 mg QD"
-output2 = custom_conversion(input2)
-print(output2)  # Output: "MR 11.5 mg QD"
-
-input3 = "0006 (0.0)"
-output3 = custom_conversion(input3)
-print(output3)  # Output: "6"
-
-input4 = "n (%)"
-output4 = custom_conversion(input4)
-print(output4)  # Output: "n (%)"
-
-input5 = "00026 (000.0)"
-output5 = custom_conversion(input5)
-print(output5)  # Output: "26"
+# Print the resulting dictionary
+print(header_response_dict)
